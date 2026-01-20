@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : mar. 20 jan. 2026 à 02:27
+-- Généré le : mer. 21 jan. 2026 à 00:17
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.0.30
 
@@ -69,6 +69,19 @@ CREATE TABLE `configuration` (
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `cours_salle`
+--
+
+CREATE TABLE `cours_salle` (
+  `id_cours_salle` int(11) NOT NULL,
+  `id_ue` int(11) NOT NULL,
+  `id_salle` int(11) NOT NULL,
+  `priorite` int(11) DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `creneau`
 --
 
@@ -103,6 +116,26 @@ CREATE TABLE `departement` (
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `emploi_de_temps`
+--
+
+CREATE TABLE `emploi_de_temps` (
+  `id_emploi` int(11) NOT NULL,
+  `id_classe` int(11) NOT NULL,
+  `id_filiere` int(11) NOT NULL,
+  `semestre` enum('S1','S2') NOT NULL,
+  `annee_academique` varchar(9) NOT NULL,
+  `date_debut` date NOT NULL,
+  `date_fin` date NOT NULL,
+  `complet` tinyint(1) DEFAULT NULL,
+  `publie` tinyint(1) DEFAULT NULL,
+  `date_creation` datetime DEFAULT NULL,
+  `date_modification` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `enseignant`
 --
 
@@ -113,7 +146,10 @@ CREATE TABLE `enseignant` (
   `specialite` varchar(150) DEFAULT NULL,
   `heures_service` int(11) DEFAULT 192,
   `id_departement` int(11) NOT NULL,
-  `statut_ens` enum('PERMANENT','VACATAIRE','ASSOCIE') DEFAULT 'PERMANENT'
+  `statut_ens` enum('PERMANENT','VACATAIRE','ASSOCIE') DEFAULT 'PERMANENT',
+  `nom_ens` varchar(100) NOT NULL,
+  `email_ens` varchar(50) NOT NULL,
+  `matricule_ens` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -126,7 +162,11 @@ CREATE TABLE `etudiant` (
   `id_etudiant` int(11) NOT NULL,
   `id_utilisateur` int(11) NOT NULL,
   `matricule` varchar(150) NOT NULL,
-  `id_classe` int(11) NOT NULL
+  `id_classe` int(11) NOT NULL,
+  `nom` varchar(100) NOT NULL,
+  `email` varchar(50) NOT NULL,
+  `departement` varchar(50) DEFAULT NULL,
+  `classe` varchar(10) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -245,6 +285,14 @@ ALTER TABLE `configuration`
   ADD UNIQUE KEY `cle` (`cle`);
 
 --
+-- Index pour la table `cours_salle`
+--
+ALTER TABLE `cours_salle`
+  ADD PRIMARY KEY (`id_cours_salle`),
+  ADD UNIQUE KEY `uk_cours_salle` (`id_ue`,`id_salle`),
+  ADD KEY `idx_salle_cours` (`id_salle`,`id_ue`);
+
+--
 -- Index pour la table `creneau`
 --
 ALTER TABLE `creneau`
@@ -260,11 +308,21 @@ ALTER TABLE `departement`
   ADD PRIMARY KEY (`id_departement`);
 
 --
+-- Index pour la table `emploi_de_temps`
+--
+ALTER TABLE `emploi_de_temps`
+  ADD PRIMARY KEY (`id_emploi`),
+  ADD KEY `id_classe` (`id_classe`),
+  ADD KEY `id_filiere` (`id_filiere`);
+
+--
 -- Index pour la table `enseignant`
 --
 ALTER TABLE `enseignant`
   ADD PRIMARY KEY (`id_enseignant`),
   ADD UNIQUE KEY `id_utilisateur` (`id_utilisateur`),
+  ADD UNIQUE KEY `email_ens` (`email_ens`),
+  ADD UNIQUE KEY `matricule_ens` (`matricule_ens`),
   ADD KEY `idx_enseignant_dep` (`id_departement`);
 
 --
@@ -274,6 +332,7 @@ ALTER TABLE `etudiant`
   ADD PRIMARY KEY (`id_etudiant`),
   ADD UNIQUE KEY `id_utilisateur` (`id_utilisateur`),
   ADD UNIQUE KEY `id_classe` (`id_classe`),
+  ADD UNIQUE KEY `email` (`email`),
   ADD KEY `idx_etudiant_classe` (`id_classe`);
 
 --
@@ -344,6 +403,12 @@ ALTER TABLE `configuration`
   MODIFY `id_config` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT pour la table `cours_salle`
+--
+ALTER TABLE `cours_salle`
+  MODIFY `id_cours_salle` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT pour la table `creneau`
 --
 ALTER TABLE `creneau`
@@ -354,6 +419,12 @@ ALTER TABLE `creneau`
 --
 ALTER TABLE `departement`
   MODIFY `id_departement` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `emploi_de_temps`
+--
+ALTER TABLE `emploi_de_temps`
+  MODIFY `id_emploi` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT pour la table `enseignant`
@@ -415,12 +486,26 @@ ALTER TABLE `classe`
   ADD CONSTRAINT `classe_ibfk_1` FOREIGN KEY (`id_filiere`) REFERENCES `filiere` (`id_filiere`);
 
 --
+-- Contraintes pour la table `cours_salle`
+--
+ALTER TABLE `cours_salle`
+  ADD CONSTRAINT `cours_salle_ibfk_1` FOREIGN KEY (`id_ue`) REFERENCES `ues` (`id_ue`) ON DELETE CASCADE,
+  ADD CONSTRAINT `cours_salle_ibfk_2` FOREIGN KEY (`id_salle`) REFERENCES `salle` (`id_salle`) ON DELETE CASCADE;
+
+--
 -- Contraintes pour la table `creneau`
 --
 ALTER TABLE `creneau`
   ADD CONSTRAINT `creneau_ibfk_1` FOREIGN KEY (`id_salle`) REFERENCES `salle` (`id_salle`) ON DELETE SET NULL,
   ADD CONSTRAINT `creneau_ibfk_2` FOREIGN KEY (`id_seance`) REFERENCES `seance` (`id_seance`) ON DELETE CASCADE,
   ADD CONSTRAINT `creneau_ibfk_3` FOREIGN KEY (`id_ue`) REFERENCES `ues` (`id_ue`) ON DELETE CASCADE;
+
+--
+-- Contraintes pour la table `emploi_de_temps`
+--
+ALTER TABLE `emploi_de_temps`
+  ADD CONSTRAINT `emploi_de_temps_ibfk_1` FOREIGN KEY (`id_classe`) REFERENCES `classe` (`id_classe`) ON DELETE CASCADE,
+  ADD CONSTRAINT `emploi_de_temps_ibfk_2` FOREIGN KEY (`id_filiere`) REFERENCES `filiere` (`id_filiere`) ON DELETE CASCADE;
 
 --
 -- Contraintes pour la table `enseignant`
