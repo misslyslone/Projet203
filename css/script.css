@@ -69,8 +69,13 @@ a{
 }
 
 .sidebar li{
-    padding-bottom: 20px;
+   /* padding-bottom: 20px;*/
     color: #eee;
+    width: 190px;
+    position: relative;
+    background-color: #f8f8f880;
+    height:40px ;
+    padding-top: 10px;
 }
 
 .body{
