@@ -3,12 +3,16 @@
     margin: 0;
 }
 
+body {
+    display: flex;
+}
+
 fieldset{
     height: 150px;
-    width: 200px;
+    width: 300px;
     margin-left: 50px;
     border-radius: 15px;
-    border: 1px solid #eee;
+    border: 1px solid #312f2f;
 }
 
 .stat{
@@ -16,15 +20,21 @@ fieldset{
     padding-left: 30px;
     margin-top: 10px;
     padding: 30px;
+    margin-left: 200px;
 }
 
 .text{
-    padding: 20px;
+    padding: 10px;
     font-size: 15px;
 }
 
 h1{
     padding: 20px;
+    margin-left: 150px;
+}
+
+.para{
+    margin-left: 180px;
 }
 
 .ens{
@@ -36,7 +46,7 @@ h1{
     background-color: #f6efefc8;
     border-radius: 30px;
     margin-top: 20px;
-    margin-left: 30px;
+    margin-left: 180px;
     text-align: center;
 }
 a{
@@ -45,4 +55,27 @@ a{
     color: black;
     margin-bottom: 10px;
 
+}
+
+.sidebar {
+    position: fixed;
+    display: flex;
+    height: 900px;
+    width: 190px;
+    background-color: #000;
+    align-content: start;
+    padding-top: 50px;
+    font-size: 20px;
+}
+
+.sidebar li{
+    padding-bottom: 20px;
+    color: #eee;
+}
+
+.body{
+    width: 90%;
+    height: 100%;
+    align-content: end;
+    margin-left: 50px;
 }
