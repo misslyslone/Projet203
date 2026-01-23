@@ -1,3 +1,4 @@
+<?php include 'connexion.php'; ?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -12,9 +13,9 @@
         <p>Veuillez choisir votre profil pour vous connecter</p>
 
         <div class="buttons">
-            <a href="login-etudiant.html" class="btn etudiant">Étudiant</a>
-            <a href="login-enseignant.html" class="btn enseignant">Enseignant</a>
-            <a href="login-chef.html" class="btn chef">Chef de Département</a>
+            <a href="login-etudiant.php" class="btn etudiant">Étudiant</a>
+            <a href="login-enseignant.php" class="btn enseignant">Enseignant</a>
+            <a href="login-chef.php" class="btn chef">Chef de Département</a>
         </div>
             
              
