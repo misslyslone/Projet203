@@ -179,6 +179,23 @@ class EnseignantModel {
             return 0;
         }
     }
+    
+    /**
+     * Récupérer l'emploi de temps d'un enseignant
+     */
+    public function getEmploiDeTemps($id_enseignant) {
+        try {
+            $query = "SELECT * FROM emploi_temps WHERE id_enseignant = ? ORDER BY jour, heure_debut";
+            $stmt = $this->connexion->prepare($query);
+            $stmt->bind_param("i", $id_enseignant);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            return $result->fetch_all(MYSQLI_ASSOC);
+        } catch (Exception $e) {
+            echo "Erreur lors de la récupération de l'emploi de temps: " . $e->getMessage();
+            return [];
+        }
+    }
 }
 
 ?>

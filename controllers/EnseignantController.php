@@ -316,6 +316,44 @@ class EnseignantController {
             ];
         }
     }
+    
+    /**
+     * Afficher l'emploi de temps d'un enseignant
+     */
+    public function getEmploiDeTemps($id_enseignant) {
+        try {
+            if (empty($id_enseignant) || !is_numeric($id_enseignant)) {
+                return [
+                    'success' => false,
+                    'message' => 'ID enseignant invalide'
+                ];
+            }
+            
+            // Vérifier que l'enseignant existe
+            $enseignant = $this->model->getById($id_enseignant);
+            if (!$enseignant) {
+                return [
+                    'success' => false,
+                    'message' => 'Enseignant non trouvé'
+                ];
+            }
+            
+            // Récupérer l'emploi de temps
+            $emploi_temps = $this->model->getEmploiDeTemps($id_enseignant);
+            
+            return [
+                'success' => true,
+                'data' => $emploi_temps,
+                'count' => count($emploi_temps),
+                'enseignant' => $enseignant['nom_ens']
+            ];
+        } catch (Exception $e) {
+            return [
+                'success' => false,
+                'message' => 'Erreur: ' . $e->getMessage()
+            ];
+        }
+    }
 }
 
 ?>
