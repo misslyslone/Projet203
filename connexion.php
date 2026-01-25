@@ -3,7 +3,7 @@
 $host = 'localhost';
 $dbname = 'bd_emplois';
 $username = 'root';
-$password = '';
+$password = 'benji123';
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
@@ -12,4 +12,3 @@ try {
 } catch (PDOException $e) {
     die("Erreur de connexion : " . $e->getMessage());
 }
-?>
