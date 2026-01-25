@@ -215,13 +215,13 @@ session_start();
                 
                 <div class="form-group">
                     <label for="classe">🏫 Classe</label>
-                    <input type="text" 
-                           id="classe" 
-                           name="classe" 
-                           placeholder="Ex: L1 Info, M2 Maths..." 
-                           required
-                           value="<?php echo isset($_SESSION['old_classe']) ? htmlspecialchars($_SESSION['old_classe']) : ''; 
-                                  unset($_SESSION['old_classe']); ?>">
+                    <select id="classe" name="classe" required>
+                        <option value="">Sélectionnez votre classe</option>
+                        <option value="1">ICT-L1</option>
+                        <option value="2">ICT-L2</option>
+                        <option value="3">ICT-L3</option>
+                    </select>
+                    
                 </div>
                 
                 <button type="submit" class="btn">

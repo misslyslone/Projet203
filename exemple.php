@@ -326,29 +326,85 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <?php endif; ?>
         </div>
         
-        <?php
-            $stmt_emploi = $pdo->prepare($query_emploi);
-            $stmt_emploi->execute($params);
-            $emploi_temps = $stmt_emploi->fetchAll(PDO::FETCH_ASSOC);
-            if ($emploi_temps) {
-                echo "<h2>Emploi du temps pour la classe</h2>";
-                echo "<table border='1'>";
-                echo "<tr><th>Jour</th><th>Heure début</th><th>Heure fin</th><th>Matière</th><th>Professeur</th><th>Salle</th></tr>";
-                foreach ($emploi_temps as $et) {
-                    echo "<tr>";
-                    echo "<td>{$et['jour']}</td>";
-                    echo "<td>{$et['heure_debut']}</td>";
-                    echo "<td>{$et['heure_fin']}</td>";
-                    echo "<td>{$et['matiere']}</td>";
-                    echo "<td>{$et['professeur']}</td>";
-                    echo "<td>{$et['salle']}</td>";
-                    echo "</tr>";
-                }
-                echo "</table>";
-            } else {
-                echo "Aucun cours trouvé pour cette classe.";
-            }
-        ?>
+        <?php if (isset($message)): ?>
+            <div class="message error">
+                <?php echo $message; ?>
+            </div>
+        <?php elseif (!empty($emploi_temps)): ?>
+            <div class="table-container">
+                <?php
+                $current_day = null;
+                foreach ($emploi_temps as $index => $seance):
+                    // Afficher un séparateur pour chaque nouveau jour
+                    if ($seance['jour'] != $current_day):
+                        $current_day = $seance['jour']; 
+                ?>
+                        <div class="jour-separator">
+                            <?php echo htmlspecialchars($seance['jour']); ?>
+                            <?php if (!empty($seance['date_seance'])): ?>
+                                (<?php echo date('d/m/Y', strtotime($seance['date_seance'])); ?>)
+                            <?php endif; ?>
+                        </div>
+                        
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Heure</th>
+                                    <th>UE</th>
+                                    <th>Intitulé</th>
+                                    <th>Type</th>
+                                    <th>Professeur</th>
+                                    <th>Salle</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    <?php endif; ?>
+                    
+                    <tr>
+                        <td>
+                            ⏰ <?php echo date('H:i', strtotime($seance['heure_debut'])); ?> 
+                            - <?php echo date('H:i', strtotime($seance['heure_fin'])); ?>
+                        </td>
+                        <td><strong><?php echo htmlspecialchars($seance['code_ue']); ?></strong></td>
+                        <td><?php echo htmlspecialchars($seance['nom_ue']); ?></td>
+                        <td>
+                            <span class="type-seance type-<?php echo strtolower($seance['type_seance']); ?>">
+                                <?php echo htmlspecialchars($seance['type_seance']); ?>
+                            </span>
+                        </td>
+                        <td>👨‍🏫 <?php echo htmlspecialchars($seance['nom_professeur']); ?></td>
+                        <td>
+                            <?php if (!empty($seance['nom_salle'])): ?>
+                                🏠 <?php echo htmlspecialchars($seance['nom_salle']); ?>
+                            <?php else: ?>
+                                <em>Non attribuée</em>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                    
+                    <?php
+                    // Fermer le tableau si c'est le dernier élément ou si le jour suivant est différent
+                    $next_seance = $emploi_temps[$index + 1] ?? null;
+                    if (!$next_seance || $next_seance['jour'] != $current_day):
+                    ?>
+                            </tbody>
+                        </table>
+                    <?php endif; ?>
+                    
+                <?php endforeach; ?>
+            </div>
+            
+            <div class="actions">
+                <button onclick="window.print()" class="btn btn-print">🖨️ Imprimer l'emploi du temps</button>
+                <a href="login-etudiant.php" class="btn">↩️ Nouvelle recherche</a>
+            </div>
+            
+        <?php else: ?>
+            <div class="actions"> 
+                 <a href="login-etudiant.php" class="btn">↩️ Retour au formulaire</a> 
+            </div> 
+        <?php endif; ?>
+    </div>
     
     <script>
         // Script pour améliorer l'expérience utilisateur

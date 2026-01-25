@@ -14,10 +14,9 @@
 
         <div class="buttons">
             <a href="login-etudiant.php" class="btn etudiant">Étudiant</a>
-            <a href="login-enseignant.php" class="btn enseignant">Enseignant</a>
+            <a href="form_search.php" class="btn enseignant">Enseignant</a>
             <a href="login-chef.php" class="btn chef">Chef de Département</a>
         </div>
-            
              
     </div>
 
